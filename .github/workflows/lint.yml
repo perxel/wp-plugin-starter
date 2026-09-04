@@ -48,3 +48,14 @@ jobs:
           # slug (and text domain) is perxel-example. Without this, every
           # __() call reads as a text-domain mismatch.
           slug: perxel-example
+          # Plugin Check runs its OWN ruleset - it does not read phpcs.xml.dist.
+          # The base template needs no ignores (the Perxel_Example namespace is
+          # slug-shaped, tables use %i). When you add code that trips a
+          # *documented* false positive, list the sniff code here AND mirror the
+          # exclusion in phpcs.xml.dist. Common cases:
+          #   WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+          #     - only if you call another plugin's hooks (WPML wpml_*, etc.)
+          #   WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters
+          #     - only if a WP_Query / get_posts uses 'suppress_filters' => true
+          # ignore-codes: |
+          #   WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound

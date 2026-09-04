@@ -1,6 +1,6 @@
 <?php
 
-namespace Perxel\Example;
+namespace Perxel_Example;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

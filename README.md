@@ -21,28 +21,26 @@ On GitHub: **Use this template -> Create a new repository**, named
 ### 2. Replace the placeholder tokens
 
 There is no build step - personalising is a find-and-replace across the tree.
-Every placeholder is one of these seven tokens. Replace them **case-sensitively**,
-`Perxel_Example` and `Perxel\Example` before anything else:
+Every placeholder is one of these six tokens. Replace them **case-sensitively**,
+`Perxel_Example` before `Perxel Example`:
 
 | Token | What it is | Example value |
 |---|---|---|
-| `Perxel_Example` | `@package` docblock tag | `Perxel_Seo_Helper` |
-| `Perxel\Example` | PHP namespace | `Perxel\SeoHelper` |
+| `Perxel_Example` | PHP namespace root **and** `@package` tag - keep it `Ucfirst_Snake` of the slug so Plugin Check accepts it as the prefix | `Perxel_Seo_Helper` |
 | `Perxel Example` | Display name (`Plugin Name` header, `PXEX_NAME`) | `Perxel SEO Helper` |
 | `perxel-example` | Slug = text domain = wordpress.org slug | `perxel-seo-helper` |
 | `wp-example` | GitHub repo name (Plugin URI, links) | `wp-seo-helper` |
 | `PXEX` | Uppercase constant / hook prefix | `PXSH` |
 | `pxex` | Lowercase hook / option / CSS-class prefix | `pxsh` |
 
-One-liner (macOS `sed`; drop the `''` after `-i` on Linux) - edit the seven
+One-liner (macOS `sed`; drop the `''` after `-i` on Linux) - edit the six
 replacement values first:
 
 ```sh
-git grep -lZ -e 'Perxel_Example' -e 'Perxel\\Example' -e 'Perxel Example' \
+git grep -lZ -e 'Perxel_Example' -e 'Perxel Example' \
              -e 'perxel-example' -e 'wp-example' -e 'PXEX' -e 'pxex' \
 | xargs -0 sed -i '' \
   -e 's/Perxel_Example/Perxel_Seo_Helper/g' \
-  -e 's/Perxel\\Example/Perxel\\SeoHelper/g' \
   -e 's/Perxel Example/Perxel SEO Helper/g' \
   -e 's/perxel-example/perxel-seo-helper/g' \
   -e 's/wp-example/wp-seo-helper/g' \
@@ -80,12 +78,16 @@ loaded" notice until the kit is vendored.)
 
 - `composer install` - pulls PHPCS + the WordPress standard.
 - `php -l <mainfile>.php && composer run lint` - both must be green.
+- `bin/plugin-check.sh` - the official WordPress Plugin Check (needs wp-cli +
+  `wp package install wordpress/plugin-check-cli`). Run it before the first
+  submission; see the "WordPress.org / Plugin Check compliance" table in
+  `CLAUDE.md` for the rules it enforces.
 - `composer run build` - produces the installable zip in `dist/`.
 - Reserve the slug at <https://wordpress.org/plugins/developers/add/> (the first
   submission is a manual review).
-- Add repo secrets **`SVN_USERNAME`** and **`SVN_PASSWORD`** (your WordPress.org
-  account) so `release.yml` can deploy. Not going on .org? Delete the `deploy` /
-  `assets` jobs from `release.yml`.
+- After the .org review is approved: add repo secrets **`SVN_USERNAME`** /
+  **`SVN_PASSWORD`** and the repo variable **`DEPLOY_TO_WPORG`** = `true` so
+  `release.yml` deploys. Not going on .org? Delete the `deploy` / `assets` jobs.
 - Add the real listing art to `.wordpress-org/` (see the README there), then
   delete that README.
 

@@ -13,6 +13,10 @@
 	<arg name="colors"/>
 	<arg value="sp"/>
 
+	<!--
+		6.5 minimum. Note: 6.2 is the hard floor for the %i placeholder in
+		$wpdb->prepare() (see CLAUDE.md -> "Custom tables") - never drop below it.
+	-->
 	<config name="minimum_supported_wp_version" value="6.5"/>
 	<config name="testVersion" value="7.4-"/>
 
@@ -51,7 +55,9 @@
 			<property name="prefixes" type="array">
 				<element value="pxex"/>
 				<element value="PXEX"/>
-				<element value="Perxel\Example"/>
+				<!-- Namespace root = slug in Ucfirst_Snake form, so Plugin Check
+				     (which does not read this file) accepts it too. -->
+				<element value="Perxel_Example"/>
 				<!-- Shared admin-UI kit (vendor/perxel-ui/), versioned independently. -->
 				<element value="perxel_ui"/>
 				<element value="PERXEL_UI"/>
@@ -60,6 +66,42 @@
 			</property>
 		</properties>
 	</rule>
+
+	<!--
+		Custom tables: uncomment when the plugin adds includes/Db.php + a
+		repository class. Queries bind the table name with %i and every value
+		through a placeholder, so the prepared-SQL sniffs pass unaided; only
+		these stay excluded (a live table read is uncached; Db.php issues DDL).
+		Plugin Check ignores this file, so annotate the calls inline too, e.g.
+		phpcs:ignore of WordPress.DB.DirectDatabaseQuery.DirectQuery + NoCaching
+		with a reason.
+	-->
+	<!--
+	<rule ref="WordPress.DB.DirectDatabaseQuery">
+		<exclude-pattern>/includes/Db.php</exclude-pattern>
+		<exclude-pattern>/uninstall.php</exclude-pattern>
+	</rule>
+	-->
+
+	<!--
+		Third-party plugin hooks (WPML wpml_*, WooCommerce, ...): if the plugin
+		wraps another plugin's hooks, scope this to the wrapper file and mirror
+		the code into the lint.yml ignore-codes block (Plugin Check does not read
+		this file).
+	-->
+	<!--
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound">
+		<exclude-pattern>/includes/Wpml.php</exclude-pattern>
+	</rule>
+	-->
+
+	<!--
+		Plugin Check also flags set_time_limit() and similar in a long-running
+		request. Guard the call with function_exists() and add an inline
+		phpcs:ignore of Squiz.PHP.DiscouragedFunctions.Discouraged with a reason
+		at the call site (and, if wanted, to the lint.yml ignore-codes block).
+	-->
+
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>

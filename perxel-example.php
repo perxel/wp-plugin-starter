@@ -3,7 +3,7 @@
  * Plugin Name:       Perxel Example
  * Plugin URI:        https://github.com/perxel/wp-example
  * Description:        A short description of what this plugin does.
- * Version:           0.1.0
+ * Version:           0.0.1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Perxel
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PXEX_VERSION', '0.1.0' );
+define( 'PXEX_VERSION', '0.0.1' );
 define( 'PXEX_FILE', __FILE__ );
 define( 'PXEX_DIR', __DIR__ );
 define( 'PXEX_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
@@ -31,15 +31,17 @@ define( 'PXEX_OPTION_KEY', 'pxex_settings' );
 define( 'PXEX_NAME', 'Perxel Example' );
 
 /**
- * PSR-4-ish autoloader for Perxel\Example\* -> includes/*.php.
+ * PSR-4-ish autoloader for Perxel_Example\* -> includes/*.php. The namespace
+ * root matches the slug (perxel-example -> Perxel_Example) so WordPress Plugin
+ * Check accepts it as the plugin prefix with no suppression.
  */
 spl_autoload_register(
 	static function ( $class_name ) {
-		if ( strpos( $class_name, 'Perxel\\Example\\' ) !== 0 ) {
+		if ( strpos( $class_name, 'Perxel_Example\\' ) !== 0 ) {
 			return;
 		}
 
-		$relative = substr( $class_name, strlen( 'Perxel\\Example\\' ) );
+		$relative = substr( $class_name, strlen( 'Perxel_Example\\' ) );
 		$path     = PXEX_DIR . '/includes/' . str_replace( '\\', '/', $relative ) . '.php';
 
 		if ( is_readable( $path ) ) {
@@ -63,7 +65,7 @@ if ( is_readable( PXEX_DIR . '/vendor/perxel-ui/loader.php' ) ) {
 	Perxel_UI_Loader::register( '0.21.0', PXEX_DIR . '/vendor/perxel-ui', PXEX_URL . '/vendor/perxel-ui' );
 }
 
-register_activation_hook( __FILE__, array( 'Perxel\Example\Plugin', 'activate' ) );
+register_activation_hook( __FILE__, array( 'Perxel_Example\Plugin', 'activate' ) );
 
 add_action(
 	'plugins_loaded',
@@ -71,6 +73,6 @@ add_action(
 		// Translations for a wordpress.org-hosted plugin load automatically since
 		// WP 4.6 - no load_plugin_textdomain() call needed. JS strings are wired
 		// per-screen with wp_set_script_translations() (see Admin::assets).
-		Perxel\Example\Plugin::instance()->boot();
+		Perxel_Example\Plugin::instance()->boot();
 	}
 );
