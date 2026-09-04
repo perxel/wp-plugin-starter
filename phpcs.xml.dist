@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<ruleset name="Perxel Plugin Name">
+	<description>Coding standards for the Perxel Plugin Name plugin.</description>
+
+	<file>.</file>
+
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/dist/*</exclude-pattern>
+	<exclude-pattern>/languages/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<config name="minimum_supported_wp_version" value="6.5"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress">
+		<!--
+			House style, deliberately different from the WP-Docs defaults that
+			wpcs 3.x folded into the base standard:
+
+			- One PSR-4-ish class per file (Ucfirst.php), loaded by the
+			  hand-rolled autoloader in the main file - not `class-ucfirst.php`.
+			- Classes live in a namespace behind an ABSPATH guard; a redundant
+			  file-level `@package` docblock is noise.
+			- Terse helpers and one-line accessors carry a `@param`/`@return`
+			  block or no docblock at all, never a mandatory prose summary.
+			- Inline comment terminal punctuation is not enforced.
+			- WP filter/action callbacks keep the full hook signature even when a
+			  later parameter is unused.
+			- The "commented-out code" heuristic fires on ordinary prose here.
+		-->
+		<exclude name="WordPress.Files.FileName"/>
+		<exclude name="Squiz.Commenting.FileComment"/>
+		<exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+		<exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
+		<exclude name="Squiz.Commenting.BlockComment.CloserSameLine"/>
+		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+		<exclude name="Squiz.PHP.CommentedOutCode"/>
+	</rule>
+
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="pxprefix"/>
+				<element value="PXPREFIX"/>
+				<element value="Perxel\PluginName"/>
+				<!-- Shared admin-UI kit (vendor/perxel-ui/), versioned independently. -->
+				<element value="perxel_ui"/>
+				<element value="PERXEL_UI"/>
+				<element value="Perxel_UI"/>
+				<element value="pxui"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="perxel-plugin-name"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		Procedural scripts and view templates: top-level / include-scope
+		variables read by a static analyser as globals, but they are not.
+	-->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+		<exclude-pattern>/includes/views/*</exclude-pattern>
+		<exclude-pattern>/uninstall.php</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+		<exclude-pattern>/includes/views/*</exclude-pattern>
+		<exclude-pattern>/uninstall.php</exclude-pattern>
+	</rule>
+</ruleset>

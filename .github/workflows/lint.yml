@@ -1,0 +1,50 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  phpcs:
+    name: PHP_CodeSniffer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          tools: composer
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPCS
+        run: composer run lint
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Check what actually ships, not the repo: the build strips vendor dev
+      # tooling, composer.json, .github, etc. (see .distignore). Checking the
+      # raw checkout makes Plugin Check flag those as "application files".
+      - name: Build the shippable plugin
+        run: bin/build-zip.sh
+
+      - name: Unpack the build
+        run: unzip -q dist/perxel-plugin-name.zip -d build
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: ./build/perxel-plugin-name
+          # The repo is github.com/perxel/wp-plugin-name but the WordPress.org
+          # slug (and text domain) is perxel-plugin-name. Without this, every
+          # __() call reads as a text-domain mismatch.
+          slug: perxel-plugin-name
