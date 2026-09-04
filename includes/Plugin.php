@@ -1,6 +1,6 @@
 <?php
 
-namespace Perxel\PluginName;
+namespace Perxel\Example;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -42,8 +42,8 @@ class Plugin {
 	 * Activation hook. Seed options / create tables here.
 	 */
 	public static function activate() {
-		if ( false === get_option( PXPREFIX_OPTION_KEY, false ) ) {
-			add_option( PXPREFIX_OPTION_KEY, Settings::defaults() );
+		if ( false === get_option( PXEX_OPTION_KEY, false ) ) {
+			add_option( PXEX_OPTION_KEY, Settings::defaults() );
 		}
 	}
 }

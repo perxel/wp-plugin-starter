@@ -4,21 +4,21 @@ Guidance for working on this repository.
 
 ## What this is
 
-`perxel-plugin-name` - a **public** WordPress plugin (repo
-`github.com/perxel/wp-plugin-name`, WordPress.org slug `perxel-plugin-name`,
+`perxel-example` - a **public** WordPress plugin (repo
+`github.com/perxel/wp-example`, WordPress.org slug `perxel-example`,
 published under the `phucbm` .org account, branded Perxel).
 
 It was scaffolded from
 [`perxel/wp-plugin-starter`](https://github.com/perxel/wp-plugin-starter). If
-this file still says "perxel-plugin-name" / "PXPREFIX" / "PluginName", the
+this file still says "perxel-example" / "PXEX" / "Example", the
 template tokens have not been replaced yet - see the starter README.
 
 ## Layout
 
 ```
-perxel-plugin-name.php      Main file: header, constants, autoloader, UI-kit loader, boot
+perxel-example.php      Main file: header, constants, autoloader, UI-kit loader, boot
 uninstall.php               Deletes the option (and any custom tables) on delete
-includes/*.php              One PSR-4-ish class per concern, namespace Perxel\PluginName\
+includes/*.php              One PSR-4-ish class per concern, namespace Perxel\Example\
 includes/views/*.php        Dumb admin templates, fed vars by the screen classes
 assets/css, assets/js       Admin-only CSS/JS (plugin-specific; layout comes from the kit)
 vendor/perxel-ui/           Shared admin-UI kit - vendored, see below
@@ -40,16 +40,16 @@ Composer). `Plugin::instance()->boot()` runs on `plugins_loaded` and wires
   asset loading, and the plain-form / `admin-post` handlers. Each screen is a
   `render_*()` method + a view under `includes/views/`; heavier per-screen logic
   goes in its own class.
-- **`Settings`** - the one option (`PXPREFIX_OPTION_KEY`), read through typed
+- **`Settings`** - the one option (`PXEX_OPTION_KEY`), read through typed
   accessors, written through `update()` / `sanitize()`. Never call
   `get_option()` for it directly elsewhere.
 
 ## Conventions
 
-- **Namespace** `Perxel\PluginName\`. Hooks, option keys and CSS classes stay
-  `pxprefix_` / `pxprefix-`; constants `PXPREFIX_`. Product name is the constant
-  `PXPREFIX_NAME` (no rebrand option).
-- **Text domain** `perxel-plugin-name` (= the slug). JS i18n via `wp.i18n`
+- **Namespace** `Perxel\Example\`. Hooks, option keys and CSS classes stay
+  `pxex_` / `pxex-`; constants `PXEX_`. Product name is the constant
+  `PXEX_NAME` (no rebrand option).
+- **Text domain** `perxel-example` (= the slug). JS i18n via `wp.i18n`
   (`wp_set_script_translations`); script deps include `wp-i18n`.
 - **Escape at output.** Views set
   `// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped` because the
@@ -102,12 +102,12 @@ WordPress site.
 
 ## Releasing
 
-1. Bump the version in `perxel-plugin-name.php` (header + `PXPREFIX_VERSION`) and
+1. Bump the version in `perxel-example.php` (header + `PXEX_VERSION`) and
    `readme.txt` (`Stable tag`); add a changelog entry to both `readme.txt` and
    `CHANGELOG.md`. The tag must equal the `Version:` header or `release.yml`
    fails.
 2. Create a GitHub Release with that tag. `release.yml`'s `zip` job attaches
-   `perxel-plugin-name.zip`; the `deploy` / `assets` jobs push to WordPress.org
+   `perxel-example.zip`; the `deploy` / `assets` jobs push to WordPress.org
    SVN (need `SVN_USERNAME` / `SVN_PASSWORD`; the SVN repo only exists after the
    first manual review is approved). Delete those two jobs if the plugin is not
    on the .org directory.

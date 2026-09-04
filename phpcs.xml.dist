@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="Perxel Plugin Name">
-	<description>Coding standards for the Perxel Plugin Name plugin.</description>
+<ruleset name="Perxel Example">
+	<description>Coding standards for the Perxel Example plugin.</description>
 
 	<file>.</file>
 
@@ -49,9 +49,9 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="pxprefix"/>
-				<element value="PXPREFIX"/>
-				<element value="Perxel\PluginName"/>
+				<element value="pxex"/>
+				<element value="PXEX"/>
+				<element value="Perxel\Example"/>
 				<!-- Shared admin-UI kit (vendor/perxel-ui/), versioned independently. -->
 				<element value="perxel_ui"/>
 				<element value="PERXEL_UI"/>
@@ -64,7 +64,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="perxel-plugin-name"/>
+				<element value="perxel-example"/>
 			</property>
 		</properties>
 	</rule>

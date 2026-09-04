@@ -1,5 +1,5 @@
 {
-	"name": "perxel/perxel-plugin-name",
+	"name": "perxel/perxel-example",
 	"description": "A short description of what this plugin does.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",

@@ -7,11 +7,11 @@
 #   bin/build-zip.sh            # build from HEAD
 #   bin/build-zip.sh --dirty    # build from the working tree (uncommitted changes included)
 #
-# Output: dist/perxel-plugin-name.zip  and  dist/perxel-plugin-name-<version>.zip
+# Output: dist/perxel-example.zip  and  dist/perxel-example-<version>.zip
 
 set -euo pipefail
 
-SLUG="perxel-plugin-name"
+SLUG="perxel-example"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Perxel\PluginName;
+namespace Perxel\Example;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Plugin settings storage. One option (PXPREFIX_OPTION_KEY) holding an array.
+ * Plugin settings storage. One option (PXEX_OPTION_KEY) holding an array.
  * Read through the typed accessors, never get_option() directly.
  */
 class Settings {
@@ -23,7 +23,7 @@ class Settings {
 	 * @return array Saved settings merged over defaults.
 	 */
 	public static function all() {
-		$saved = get_option( PXPREFIX_OPTION_KEY, array() );
+		$saved = get_option( PXEX_OPTION_KEY, array() );
 		return wp_parse_args( is_array( $saved ) ? $saved : array(), self::defaults() );
 	}
 
@@ -48,11 +48,11 @@ class Settings {
 	 * @param array $values Partial or full settings.
 	 */
 	public static function update( array $values ) {
-		update_option( PXPREFIX_OPTION_KEY, wp_parse_args( $values, self::all() ) );
+		update_option( PXEX_OPTION_KEY, wp_parse_args( $values, self::all() ) );
 	}
 
 	public static function reset() {
-		update_option( PXPREFIX_OPTION_KEY, self::defaults() );
+		update_option( PXEX_OPTION_KEY, self::defaults() );
 	}
 
 	/**

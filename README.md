@@ -6,8 +6,8 @@ house layout every Perxel plugin shares - a namespaced, autoloaded codebase, the
 in, PHPCS + WordPress Plugin Check in CI, and a release workflow that builds the
 installable zip and deploys to WordPress.org.
 
-Out of the box it is a working plugin: activate it and **Tools -> Perxel Plugin
-Name** shows a Settings screen (a text field + a toggle, saved through
+Out of the box it is a working plugin: activate it and **Tools -> Perxel
+Example** shows a Settings screen (a text field + a toggle, saved through
 `admin-post`) rendered in the shared UI layout, plus a hidden maintainer-only
 "Perxel UI" component showcase.
 
@@ -18,53 +18,52 @@ Name** shows a Settings screen (a text field + a toggle, saved through
 On GitHub: **Use this template -> Create a new repository**, named
 `wp-<something>` under `perxel/`. Clone it.
 
-### 2. Replace the template tokens
+### 2. Replace the placeholder tokens
 
-The template has no build step - personalising is a find-and-replace across the
-tree. Replace these **case-sensitively, top to bottom** (order matters - the
-compound tokens must go before their parts):
+There is no build step - personalising is a find-and-replace across the tree.
+Every placeholder is one of these seven tokens. Replace them **case-sensitively**,
+`Perxel_Example` and `Perxel\Example` before anything else:
 
-| Find | Replace with | Example |
+| Token | What it is | Example value |
 |---|---|---|
-| `Perxel_PluginName` | `@package` tag (underscored) | `Perxel_Seo_Helper` |
-| `Perxel Plugin Name` | Display name | `Perxel SEO Helper` |
-| `Perxel\PluginName` | PHP namespace | `Perxel\SeoHelper` |
-| `PluginName` | Namespace segment (leftover uses) | `SeoHelper` |
-| `perxel-plugin-name` | Slug = text domain = .org slug | `perxel-seo-helper` |
-| `wp-plugin-name` | GitHub repo name | `wp-seo-helper` |
-| `PXPREFIX` | Uppercase constant / hook prefix | `PXSH` |
-| `pxprefix` | Lowercase hook / option / CSS prefix | `pxsh` |
+| `Perxel_Example` | `@package` docblock tag | `Perxel_Seo_Helper` |
+| `Perxel\Example` | PHP namespace | `Perxel\SeoHelper` |
+| `Perxel Example` | Display name (`Plugin Name` header, `PXEX_NAME`) | `Perxel SEO Helper` |
+| `perxel-example` | Slug = text domain = wordpress.org slug | `perxel-seo-helper` |
+| `wp-example` | GitHub repo name (Plugin URI, links) | `wp-seo-helper` |
+| `PXEX` | Uppercase constant / hook prefix | `PXSH` |
+| `pxex` | Lowercase hook / option / CSS-class prefix | `pxsh` |
 
-Then:
+One-liner (macOS `sed`; drop the `''` after `-i` on Linux) - edit the seven
+replacement values first:
 
 ```sh
-# Rename the main file to match the slug
-git mv perxel-plugin-name.php perxel-seo-helper.php
-git mv languages/perxel-plugin-name.pot languages/perxel-seo-helper.pot
+git grep -lZ -e 'Perxel_Example' -e 'Perxel\\Example' -e 'Perxel Example' \
+             -e 'perxel-example' -e 'wp-example' -e 'PXEX' -e 'pxex' \
+| xargs -0 sed -i '' \
+  -e 's/Perxel_Example/Perxel_Seo_Helper/g' \
+  -e 's/Perxel\\Example/Perxel\\SeoHelper/g' \
+  -e 's/Perxel Example/Perxel SEO Helper/g' \
+  -e 's/perxel-example/perxel-seo-helper/g' \
+  -e 's/wp-example/wp-seo-helper/g' \
+  -e 's/PXEX/PXSH/g' \
+  -e 's/pxex/pxsh/g'
 ```
 
-One-liner for the text replacements (macOS `sed`; drop the `''` on Linux):
+Then rename the two slug-named files:
 
 ```sh
-git grep -lZ -e 'Perxel_PluginName' -e 'Perxel Plugin Name' -e 'PluginName' \
-  -e 'perxel-plugin-name' -e 'wp-plugin-name' -e 'PXPREFIX' -e 'pxprefix' \
-| xargs -0 sed -i '' \
-  -e 's/Perxel_PluginName/Perxel_Seo_Helper/g' \
-  -e 's/Perxel Plugin Name/Perxel SEO Helper/g' \
-  -e 's/Perxel\\PluginName/Perxel\\SeoHelper/g' \
-  -e 's/PluginName/SeoHelper/g' \
-  -e 's/perxel-plugin-name/perxel-seo-helper/g' \
-  -e 's/wp-plugin-name/wp-seo-helper/g' \
-  -e 's/PXPREFIX/PXSH/g' \
-  -e 's/pxprefix/pxsh/g'
+git mv perxel-example.php perxel-seo-helper.php
+git mv languages/perxel-example.pot languages/perxel-seo-helper.pot
 ```
 
 ### 3. Fill in the free text
 
 Search for **`A short description of what this plugin does.`** (main file header,
-`composer.json`, `readme.txt`, this README) and write the real one-liner. Then
-work through `readme.txt` (tags, `Tested up to`, Description, FAQ, Screenshots)
-and replace this README with the plugin's own.
+`composer.json`, `readme.txt`) and write the real one-liner. Then work through
+`readme.txt` - `Contributors`, `Tags`, `Tested up to`, Description, FAQ,
+Screenshots, and the External services section (delete it if the plugin calls
+nothing third-party) - and replace this README with the plugin's own.
 
 ### 4. Vendor the UI kit
 
@@ -80,19 +79,19 @@ loaded" notice until the kit is vendored.)
 ### 5. Wire up the repo
 
 - `composer install` - pulls PHPCS + the WordPress standard.
-- `php -l perxel-seo-helper.php && composer run lint` - both must be green.
-- `composer run build` - produces `dist/perxel-seo-helper.zip`.
-- Reserve the slug at <https://wordpress.org/plugins/developers/add/> (first
+- `php -l <mainfile>.php && composer run lint` - both must be green.
+- `composer run build` - produces the installable zip in `dist/`.
+- Reserve the slug at <https://wordpress.org/plugins/developers/add/> (the first
   submission is a manual review).
 - Add repo secrets **`SVN_USERNAME`** and **`SVN_PASSWORD`** (your WordPress.org
-  account) so `release.yml` can deploy. Not on .org? Delete the `deploy` /
-  `assets` jobs from `release.yml` and the External services / Screenshots
-  scaffolding you do not need.
-- Delete `.wordpress-org/README.md` once you have added the real listing assets.
+  account) so `release.yml` can deploy. Not going on .org? Delete the `deploy` /
+  `assets` jobs from `release.yml`.
+- Add the real listing art to `.wordpress-org/` (see the README there), then
+  delete that README.
 
 ### 6. Delete this section
 
-Once the new repo builds, remove "Creating a new plugin from it" from its
+Once the new repo builds green, remove "Creating a new plugin from it" from its
 README.
 
 ## What's inside
@@ -103,6 +102,6 @@ process - it is written to travel with the generated plugin.
 ## Updating the template itself
 
 Improvements to the shared layout (`includes/Admin.php`, `phpcs.xml.dist`, the
-workflows, `bin/`) land here first. Existing plugins pull UI changes through
+workflows, `bin/`) land here first. Existing plugins pull UI-kit changes through
 `bin/update-ui.sh`; they do **not** auto-sync template changes - port those by
 hand when they matter.

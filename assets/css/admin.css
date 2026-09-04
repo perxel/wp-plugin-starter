@@ -1,12 +1,12 @@
 /*
  * Plugin-local admin styles. The layout and every component come from the
  * shared UI kit (enqueued as `perxel-ui`); this file is only for bits that are
- * specific to this plugin. Scope every rule under `.pxprefix` so nothing leaks
+ * specific to this plugin. Scope every rule under `.pxex` so nothing leaks
  * into the rest of wp-admin.
  */
 
-.pxprefix input[type="password"],
-.pxprefix input[type="text"] {
+.pxex input[type="password"],
+.pxex input[type="text"] {
 	min-width: 320px;
 	max-width: 100%;
 }

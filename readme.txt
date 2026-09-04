@@ -1,8 +1,8 @@
-=== Perxel Plugin Name ===
+=== Perxel Example ===
 Contributors: phucbm
 Tags: tag-one, tag-two
 Requires at least: 6.5
-Tested up to: 6.7
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 0.1.0
 License: GPLv2 or later
@@ -33,9 +33,9 @@ This plugin does not connect to any external services.
 
 == Installation ==
 
-1. Upload the plugin to `/wp-content/plugins/perxel-plugin-name`, or install it from the Plugins screen.
+1. Upload the plugin to `/wp-content/plugins/perxel-example`, or install it from the Plugins screen.
 2. Activate it.
-3. Go to **Tools -> Perxel Plugin Name** to configure it.
+3. Go to **Tools -> Perxel Example** to configure it.
 
 == Frequently Asked Questions ==
 
