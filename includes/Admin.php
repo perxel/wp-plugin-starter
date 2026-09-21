@@ -20,6 +20,18 @@ class Admin {
 	const PAGE_SETTINGS = 'pxex';
 	const PAGE_UI       = 'pxex-ui';
 
+	/**
+	 * Echo markup returned by a Perxel_UI renderer. The kit escapes its own
+	 * structure; every dynamic value handed to it is escaped by the caller.
+	 * This is the single place output escaping is delegated to the kit - do not
+	 * `phpcs:disable` EscapeOutput for a whole view.
+	 *
+	 * @param string $html Markup from a Perxel_UI:: renderer.
+	 */
+	public static function kit( $html ) {
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted Perxel_UI markup; see docblock.
+	}
+
 	public function register() {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
@@ -221,13 +233,11 @@ class Admin {
 	 * ------------------------------------------------------------------- */
 
 	public function render_settings() {
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display-only flash flags set by our own redirect.
 		$vars = array(
 			'settings'  => Settings::all(),
-			'updated'   => isset( $_GET['updated'] ),
-			'was_reset' => isset( $_GET['reset'] ),
+			'updated'   => isset( $_GET['updated'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only flash flag set by our own redirect.
+			'was_reset' => isset( $_GET['reset'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only flash flag set by our own redirect.
 		);
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$save = get_submit_button(
 			__( 'Save settings', 'perxel-example' ),
