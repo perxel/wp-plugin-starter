@@ -79,10 +79,9 @@ loaded" notice until the kit is vendored.)
 
 - `composer install` - pulls PHPCS + the WordPress standard.
 - `php -l <mainfile>.php && composer run lint` - both must be green.
-- `bin/plugin-check.sh` - the official WordPress Plugin Check (needs wp-cli +
-  `wp package install wordpress/plugin-check-cli`). Run it before the first
-  submission; see the "WordPress.org / Plugin Check compliance" table in
-  `CLAUDE.md` for the rules it enforces.
+- CI runs the official WordPress Plugin Check on the built zip; see the
+  "WordPress.org / Plugin Check compliance" table in `CLAUDE.md` for the rules
+  it enforces.
 - `composer run build` - produces the installable zip in `dist/`.
 - Reserve the slug at <https://wordpress.org/plugins/developers/add/> (the first
   submission is a manual review).

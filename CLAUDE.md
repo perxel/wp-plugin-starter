@@ -39,7 +39,7 @@ Every Perxel plugin follows these; they are owned by the starter.
 - `.env.local` holds credentials: never commit it (it is in `.gitignore`).
 - `bin/*.sh` derive the slug from the main plugin file, so they are byte-identical
   across plugins - never hard-code a slug in them. Per-plugin Plugin Check
-  suppressions go in `.plugin-check-ignore`.
+  suppressions go in `lint.yml` -> `ignore-codes`.
 - `languages/` is optional; `.org` auto-loads translations.
 
 ## Layout
@@ -54,8 +54,7 @@ vendor/perxel-ui/           Shared admin-UI kit - vendored, see below
 languages/                  .pot template
 readme.txt                  WordPress.org listing (keep in sync with README.md + version)
 README.md                   Public-facing GitHub page only (see "Documentation rules")
-bin/                        build-zip.sh, plugin-check.sh, update-ui.sh - identical in every plugin
-.plugin-check-ignore        Documented Plugin Check false positives (mirrored in lint.yml)
+bin/                        build-zip.sh, update-ui.sh - identical in every plugin
 .wordpress-org/             Listing assets (icon, banner, screenshots) - not shipped
 .claude/assets-src/         Master/source art for the listing assets - committed, not shipped
 .github/workflows/          lint.yml (PHPCS + Plugin Check), release.yml
@@ -160,8 +159,6 @@ page is suppressed.
 php -l <changed files>
 composer run lint          # phpcs - must stay green
 composer run build         # bin/build-zip.sh - installable zip in dist/
-bin/plugin-check.sh        # official Plugin Check, same as CI (needs wp-cli +
-                           #   `wp package install wordpress/plugin-check-cli`)
 ```
 
 `phpcs.xml.dist` curates the base `WordPress` standard: a terse-docblock house
@@ -189,8 +186,7 @@ Rules that are not obvious and cost real time when re-derived per plugin:
 
 The split that bites: **Plugin Check runs its own ruleset, not `phpcs.xml.dist`.**
 Any suppression for a documented false positive goes in *both* places -
-`phpcs.xml.dist` (for `composer run lint`) and `lint.yml` -> `ignore-codes`
-(mirrored in `.plugin-check-ignore`, which `bin/plugin-check.sh` reads).
+`phpcs.xml.dist` (for `composer run lint`) and `lint.yml` -> `ignore-codes`.
 
 ## Releasing
 
@@ -241,7 +237,7 @@ truth (SSOT) for everything that is *not* plugin-specific:
 |---|---|
 | CI: PHPCS + Plugin Check (built-zip approach) | `.github/workflows/lint.yml`, `phpcs.xml.dist` |
 | Release: zip + SHA-pinned WordPress.org deploy, version gate, dry run | `.github/workflows/release.yml` |
-| What ships / what doesn't | `.distignore`, `bin/*.sh` (byte-identical everywhere), `.plugin-check-ignore` format |
+| What ships / what doesn't | `.distignore`, `bin/*.sh` (byte-identical everywhere) |
 | WordPress.org compliance rules and the release / first-submission process | `CLAUDE.md` -> "Documentation rules", "WordPress.org / Plugin Check compliance", "Releasing" |
 | Listing-asset names, sizes and tips | `.wordpress-org/README.md` |
 | House layout and conventions | `includes/`, `CLAUDE.md` |
