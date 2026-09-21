@@ -85,9 +85,12 @@ loaded" notice until the kit is vendored.)
 - `composer run build` - produces the installable zip in `dist/`.
 - Reserve the slug at <https://wordpress.org/plugins/developers/add/> (the first
   submission is a manual review).
-- After the .org review is approved: add repo secrets **`SVN_USERNAME`** /
-  **`SVN_PASSWORD`** and the repo variable **`DEPLOY_TO_WPORG`** = `true` so
-  `release.yml` deploys. Not going on .org? Delete the `deploy` job.
+- After the .org review is approved: give the repo access to the org secrets
+  **`SVN_USERNAME`** / **`SVN_PASSWORD`** (or add them as repo secrets), set the
+  repo variable **`DEPLOY_TO_WPORG`** = `true`, run **Actions -> Release -> Run
+  workflow** once with `dry_run` on to check the staging, then publish a Release
+  - `release.yml` deploys it (details in `CLAUDE.md` -> Releasing). Not going on
+  .org? Delete the `deploy` job.
 - Add the real listing art to `.wordpress-org/` (see the README there), then
   delete that README.
 
