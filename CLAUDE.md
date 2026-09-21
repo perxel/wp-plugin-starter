@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-Guidance for working on this repository.
+Guidance for working on this repository. This is the **only** agent/maintainer
+document (see "Documentation rules" below).
 
 ## What this is
 
@@ -20,6 +21,27 @@ those while working here, make the same change in the starter too (or tell the
 maintainer), so the next plugin inherits it. Plugin-specific code and listing art
 stay here.
 
+## Documentation rules
+
+Every Perxel plugin follows these; they are owned by the starter.
+
+- **`README.md` is public-facing only**: what the plugin does, screenshots,
+  install, requirements, what data it stores / external services, license. No
+  architecture, folder layout, build/lint/release steps, or "how to extend" -
+  none of that belongs on the public page.
+- **`CLAUDE.md` is the one and only file for developers and agents**:
+  architecture, conventions, compliance, releasing. There is **no `AGENTS.md`**
+  (and no second "playbook" file) - do not recreate it or duplicate content
+  across the two. Claude Code reads `CLAUDE.md`; other agents can be pointed at it.
+- `readme.txt` is the WordPress.org listing, `CHANGELOG.md` (optional) the
+  changelog. Neither carries developer guidance.
+- Master/source art for `.wordpress-org/` lives in `.claude/assets-src/`.
+- `.env.local` holds credentials: never commit it (it is in `.gitignore`).
+- `bin/*.sh` derive the slug from the main plugin file, so they are byte-identical
+  across plugins - never hard-code a slug in them. Per-plugin Plugin Check
+  suppressions go in `.plugin-check-ignore`.
+- `languages/` is optional; `.org` auto-loads translations.
+
 ## Layout
 
 ```
@@ -31,7 +53,11 @@ assets/css, assets/js       Admin-only CSS/JS (plugin-specific; layout comes fro
 vendor/perxel-ui/           Shared admin-UI kit - vendored, see below
 languages/                  .pot template
 readme.txt                  WordPress.org listing (keep in sync with README.md + version)
+README.md                   Public-facing GitHub page only (see "Documentation rules")
+bin/                        build-zip.sh, plugin-check.sh, update-ui.sh - identical in every plugin
+.plugin-check-ignore        Documented Plugin Check false positives (mirrored in lint.yml)
 .wordpress-org/             Listing assets (icon, banner, screenshots) - not shipped
+.claude/assets-src/         Master/source art for the listing assets - committed, not shipped
 .github/workflows/          lint.yml (PHPCS + Plugin Check), release.yml
 ```
 
@@ -164,7 +190,7 @@ Rules that are not obvious and cost real time when re-derived per plugin:
 The split that bites: **Plugin Check runs its own ruleset, not `phpcs.xml.dist`.**
 Any suppression for a documented false positive goes in *both* places -
 `phpcs.xml.dist` (for `composer run lint`) and `lint.yml` -> `ignore-codes`
-(mirrored by `bin/plugin-check.sh`).
+(mirrored in `.plugin-check-ignore`, which `bin/plugin-check.sh` reads).
 
 ## Releasing
 
@@ -203,3 +229,35 @@ tag itself; on a manual run it can't, hence the explicit `VERSION`. Do not bump
 versions, tag or publish releases without the maintainer asking.
 
 Build artifacts (`dist/`) are never committed.
+
+## Source of truth (starter repo only)
+
+Delete this section in a generated plugin.
+
+Every Perxel plugin is generated from here, so this repo is the single source of
+truth (SSOT) for everything that is *not* plugin-specific:
+
+| Owned here | Where |
+|---|---|
+| CI: PHPCS + Plugin Check (built-zip approach) | `.github/workflows/lint.yml`, `phpcs.xml.dist` |
+| Release: zip + SHA-pinned WordPress.org deploy, version gate, dry run | `.github/workflows/release.yml` |
+| What ships / what doesn't | `.distignore`, `bin/*.sh` (byte-identical everywhere), `.plugin-check-ignore` format |
+| WordPress.org compliance rules and the release / first-submission process | `CLAUDE.md` -> "Documentation rules", "WordPress.org / Plugin Check compliance", "Releasing" |
+| Listing-asset names, sizes and tips | `.wordpress-org/README.md` |
+| House layout and conventions | `includes/`, `CLAUDE.md` |
+
+The admin UI kit is the one exception: its source is
+[`perxel/wp-plugin-ui`](https://github.com/perxel/wp-plugin-ui); plugins vendor it
+with `bin/update-ui.sh`.
+
+Rules:
+
+- **Fix shared things here first**, then port to plugins. If a plugin session finds
+  a better CI setup, a new compliance rule or a release gotcha, it goes into the
+  starter in the same sitting - never only into the one plugin, and never as a
+  separate "playbook" in a plugin repo (that is a second source of truth).
+- **Plugin-specific stays in the plugin**: its code, `readme.txt`, listing art,
+  slug/tokens.
+- Existing plugins do **not** auto-sync. When a starter change matters, port it by
+  hand (the slug and prefix tokens are the only expected differences in shared
+  files; `bin/*.sh` should be byte-identical).

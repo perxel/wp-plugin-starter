@@ -61,7 +61,8 @@ Search for **`A short description of what this plugin does.`** (main file header
 `composer.json`, `readme.txt`) and write the real one-liner. Then work through
 `readme.txt` - `Contributors`, `Tags`, `Tested up to`, Description, FAQ,
 Screenshots, and the External services section (delete it if the plugin calls
-nothing third-party) - and replace this README with the plugin's own.
+nothing third-party) - and replace this README with the plugin's own (public-facing only - see
+`CLAUDE.md` -> "Documentation rules").
 
 ### 4. Vendor the UI kit
 
@@ -98,41 +99,3 @@ loaded" notice until the kit is vendored.)
 
 Once the new repo builds green, remove "Creating a new plugin from it" from its
 README.
-
-## What's inside
-
-See [CLAUDE.md](CLAUDE.md) for the full architecture, conventions, and release
-process - it is written to travel with the generated plugin.
-
-## This repo is the source of truth
-
-Every Perxel plugin is generated from here, so this repo is the single source of
-truth (SSOT) for everything that is *not* plugin-specific:
-
-| Owned here | Where |
-|---|---|
-| CI: PHPCS + Plugin Check (built-zip approach) | `.github/workflows/lint.yml`, `phpcs.xml.dist` |
-| Release: zip + SHA-pinned WordPress.org deploy, version gate, dry run | `.github/workflows/release.yml` |
-| What ships / what doesn't | `.distignore`, `bin/build-zip.sh`, `bin/plugin-check.sh` |
-| WordPress.org compliance rules and the release / first-submission process | `CLAUDE.md` -> "WordPress.org / Plugin Check compliance", "Releasing" |
-| Listing-asset names, sizes and tips | `.wordpress-org/README.md` |
-| House layout and conventions | `includes/`, `CLAUDE.md` |
-
-The admin UI kit is the one exception: its source is
-[`perxel/wp-plugin-ui`](https://github.com/perxel/wp-plugin-ui); plugins vendor it
-with `bin/update-ui.sh`.
-
-Rules:
-
-- **Fix shared things here first**, then port to plugins. If a plugin session finds
-  a better CI setup, a new compliance rule or a release gotcha, it goes into the
-  starter in the same sitting - never only into the one plugin, and never as a
-  separate "playbook" in a plugin repo (that is a second source of truth).
-- **Plugin-specific stays in the plugin**: its code, `readme.txt`, listing art,
-  slug/tokens.
-- Existing plugins do **not** auto-sync. When a starter change matters, port it by
-  hand (the placeholder slug `perxel-example` -> the plugin's slug is the only
-  expected difference in the shared files).
-- Known drift: `wp-image-optimizer` predates the starter. It still has `ui/` instead
-  of `vendor/perxel-ui/`, and its `lint.yml` / `release.yml` are earlier variants of
-  the ones here. Treat the starter versions as correct.
