@@ -13,6 +13,13 @@ It was scaffolded from
 this file still says "perxel-example" / "PXEX" / "Example", the
 template tokens have not been replaced yet - see the starter README.
 
+**Upstream rule:** the starter is the source of truth for shared process - CI,
+release/deploy, WordPress.org compliance rules, `.distignore`, build scripts, and
+the "Releasing" and "Compliance" sections of this file. If you improve or fix one of
+those while working here, make the same change in the starter too (or tell the
+maintainer), so the next plugin inherits it. Plugin-specific code and listing art
+stay here.
+
 ## Layout
 
 ```
