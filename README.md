@@ -87,7 +87,7 @@ loaded" notice until the kit is vendored.)
   submission is a manual review).
 - After the .org review is approved: add repo secrets **`SVN_USERNAME`** /
   **`SVN_PASSWORD`** and the repo variable **`DEPLOY_TO_WPORG`** = `true` so
-  `release.yml` deploys. Not going on .org? Delete the `deploy` / `assets` jobs.
+  `release.yml` deploys. Not going on .org? Delete the `deploy` job.
 - Add the real listing art to `.wordpress-org/` (see the README there), then
   delete that README.
 
