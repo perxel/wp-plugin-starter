@@ -163,13 +163,36 @@ Any suppression for a documented false positive goes in *both* places -
 
 1. Bump the version in `perxel-example.php` (header + `PXEX_VERSION`) and
    `readme.txt` (`Stable tag`); add a changelog entry to both `readme.txt` and
-   `CHANGELOG.md`. The tag must equal the `Version:` header or `release.yml`
-   fails.
-2. Create a GitHub Release with that tag. `release.yml`'s `zip` job attaches
-   `perxel-example.zip`; the `deploy` / `assets` jobs push to WordPress.org SVN
-   but only when the repo variable `DEPLOY_TO_WPORG` is `true` (set it once the
-   first manual .org review is approved, alongside the `SVN_USERNAME` /
-   `SVN_PASSWORD` secrets). Until then a Release just builds the zip and stays
-   green.
+   `CHANGELOG.md`. Merge to `main` first. Tag, plugin `Version:` and `Stable tag`
+   must all be equal or the deploy fails before touching SVN.
+2. Create the tag on `main` and publish a GitHub Release. `release.yml`'s `zip`
+   job attaches `perxel-example.zip`; the `deploy` job commits trunk +
+   `tags/<version>` + `.wordpress-org/` (-> SVN `assets/`) with the SHA-pinned
+   10up action. It only runs when the repo variable `DEPLOY_TO_WPORG` is `true`.
+3. Verify `https://wordpress.org/plugins/<slug>/` and
+   `https://api.wordpress.org/plugins/info/1.0/<slug>.json` show the new version.
+   Assets can 404 on `ps.w.org` for a while after the first commit (CDN lag).
+
+### First release of a new plugin (the only manual bit is the review)
+
+1. Upload `dist/<slug>.zip` at <https://wordpress.org/plugins/developers/add/>.
+   No SVN repo exists until the review team approves it.
+2. Secrets `SVN_USERNAME` / `SVN_PASSWORD`: set once as **org** secrets and grant
+   this repo access (org -> Settings -> Secrets -> Repository access). Use an
+   SVN-specific password if the wordpress.org profile offers one. Never paste it
+   in chat or commit it.
+3. Once approved: set the repo variable `DEPLOY_TO_WPORG=true`, run **Actions ->
+   Release -> Run workflow** with the tag and `dry_run` on (default) to check the
+   staging without committing, then publish the Release. The very first version
+   deploys the same way as every later one - no manual SVN commit.
+4. If automation ever breaks, plain `svn` works: check out
+   `https://plugins.svn.wordpress.org/<slug>`, copy the `.distignore`-filtered
+   build into `trunk/`, `.wordpress-org/*` into `assets/`, `svn cp trunk
+   tags/<version>`, `svn ci`.
+
+Notes: a large first commit (hundreds of vendored files) sits on "Committing
+transaction..." for minutes - normal. The action strips the `v` from a `vX.Y.Z`
+tag itself; on a manual run it can't, hence the explicit `VERSION`. Do not bump
+versions, tag or publish releases without the maintainer asking.
 
 Build artifacts (`dist/`) are never committed.
