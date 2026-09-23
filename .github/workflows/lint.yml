@@ -55,7 +55,5 @@ jobs:
           # exclusion in phpcs.xml.dist. Common cases:
           #   WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
           #     - only if you call another plugin's hooks (WPML wpml_*, etc.)
-          #   WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters
-          #     - only if a WP_Query / get_posts uses 'suppress_filters' => true
           # ignore-codes: |
           #   WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound

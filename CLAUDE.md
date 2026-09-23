@@ -124,12 +124,16 @@ The template ships none. When you add them:
 - **Escape at output, no blanket suppressions.** Never `phpcs:disable` a
   `WordPress.Security.*` sniff (EscapeOutput, NonceVerification) for a file or
   block - the WordPress.org review bot flags it as an escaping/nonce failure
-  even when every value is escaped. Kit markup is echoed through
-  `Admin::kit( \Perxel_UI::rows( ... ) )` (the one delegated `echo`); any other
-  pre-escaped echo gets a per-line `// phpcs:ignore <code> -- <reason>`;
-  read-only `$_GET` flags get a per-line `NonceVerification.Recommended` ignore.
-  `composer run lint` runs `bin/check-suppressions.sh`, which fails on the
-  blanket form.
+  even when every value is escaped. **Escape late**: kit markup is echoed
+  through `Admin::kit( \Perxel_UI::rows( ... ) )`, i.e.
+  `echo wp_kses( $html, \Perxel_UI::allowed_html() )`; any other built HTML gets
+  its own `wp_kses( $html, <narrow allowlist> )`. Never an `EscapeOutput`
+  suppression, not even per line - the 2026-09-23 review of perxel-ai-translate
+  rejected `echo $html; // phpcs:ignore ... escaped earlier`. No inline `on*`
+  handlers in kit markup (kses strips them) - wire them in JS. Read-only
+  `$_GET` flags get a per-line `NonceVerification.Recommended` ignore.
+  `composer run lint` runs `bin/check-suppressions.sh`, which fails on blanket
+  `WordPress.Security` disables and on any `EscapeOutput` suppression.
 - Admin screens render inside `Perxel_UI_Layout::open()/close()` via
   `Admin::screen()`, which falls back to a plain notice if the kit is not
   vendored. Use the kit components (`rows()`, `notice()`, `toggle()`, `code()`,
@@ -186,10 +190,11 @@ Rules that are not obvious and cost real time when re-derived per plugin:
 | Custom-table names via `%i`, never string-concatenated | `WordPress.DB.PreparedSQL.NotPrepared` is **error-level** and blocks .org (see "Custom tables") |
 | No `load_plugin_textdomain()` | .org auto-loads translations (slug == text domain); calling it on `plugins_loaded` is "too early" on WP 6.7+ |
 | Prefix any variable you **assign** in a view (`$pxex_url`); vars passed in via `extract()` are fine | `NonPrefixedVariableFound` fires on template-scope assignments |
-| No `phpcs:disable WordPress.Security.*` anywhere in `includes/` or the main file; use `Admin::kit()` and per-line ignores | Reviewers flag file-wide security disables as escaping/nonce failures (hit perxel-image-optimizer and perxel-ai-translate); `bin/check-suppressions.sh` enforces it |
+| No `phpcs:disable WordPress.Security.*` anywhere in `includes/` or the main file, and no `EscapeOutput` suppression at all: escape late via `Admin::kit()` (`wp_kses` + `Perxel_UI::allowed_html()`) or `wp_kses()` with a narrow allowlist | Reviewers flag file-wide security disables (perxel-image-optimizer, perxel-ai-translate 2026-09-22) and per-line "escaped earlier" echoes (perxel-ai-translate 2026-09-23); `bin/check-suppressions.sh` enforces both |
 | `set_time_limit()` etc.: `function_exists()` guard + inline `// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- <reason>` | discouraged-function warning |
 | Calling another plugin's hooks (WPML `wpml_*`, WooCommerce): scope a `phpcs.xml.dist` exclude to the wrapper file **and** add the code to `lint.yml` -> `ignore-codes` | `NonPrefixedHooknameFound`; the two tools don't share config |
-| `'suppress_filters' => true` in a query: same dual-suppression, code `WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters` | deliberate but flagged |
+| No `'suppress_filters' => true` (Plugin Check **error**); `get_posts()` already defaults to it; for WPML use `do_action( 'wpml_switch_language', 'all' )` and restore | error-level `WordPressVIPMinimum...SuppressFilters_suppress_filters` |
+| A MySQL `GET_LOCK` result must be checked; skip the guarded work when it isn't `1` | reviewer flagged an ignored lock result as a race condition |
 
 The split that bites: **Plugin Check runs its own ruleset, not `phpcs.xml.dist`.**
 Any suppression for a documented false positive goes in *both* places -

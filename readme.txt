@@ -4,7 +4,7 @@ Tags: tag-one, tag-two
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.0.1
+Stable tag: 0.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ posts or media library is left untouched.
 1. The Settings screen.
 
 == Changelog ==
+
+= 0.0.2 =
+* Admin output is escaped late: `Admin::kit()` echoes through `wp_kses()` with the shared UI kit's `Perxel_UI::allowed_html()` (kit 0.23.0+). `bin/check-suppressions.sh` also fails on any `EscapeOutput` suppression.
 
 = 0.0.1 =
 * First release.
