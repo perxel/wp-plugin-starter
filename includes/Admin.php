@@ -21,15 +21,15 @@ class Admin {
 	const PAGE_UI       = 'pxex-ui';
 
 	/**
-	 * Echo markup returned by a Perxel_UI renderer. The kit escapes its own
-	 * structure; every dynamic value handed to it is escaped by the caller.
-	 * This is the single place output escaping is delegated to the kit - do not
-	 * `phpcs:disable` EscapeOutput for a whole view.
+	 * Echo markup returned by a Perxel_UI renderer, escaped late through the
+	 * kit's own wp_kses() allowlist. Never echo kit markup any other way, and
+	 * never suppress EscapeOutput (WordPress.org review rejects both a
+	 * file-wide disable and a per-line "escaped earlier" ignore).
 	 *
 	 * @param string $html Markup from a Perxel_UI:: renderer.
 	 */
 	public static function kit( $html ) {
-		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted Perxel_UI markup; see docblock.
+		echo wp_kses( $html, \Perxel_UI::allowed_html() );
 	}
 
 	public function register() {

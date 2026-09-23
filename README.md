@@ -67,10 +67,10 @@ nothing third-party) - and replace this README with the plugin's own (public-fac
 ### 4. Vendor the UI kit
 
 ```sh
-bin/update-ui.sh 0.21.0        # newest tag at github.com/perxel/wp-plugin-ui
+bin/update-ui.sh 0.23.0        # newest tag at github.com/perxel/wp-plugin-ui
 ```
 
-Set that same version in the main file's `Perxel_UI_Loader::register( '0.21.0',
+Set that same version in the main file's `Perxel_UI_Loader::register( '0.23.0',
 ... )` call - it is what the "highest version wins" loader compares. (The plugin
 still activates without this step - it just shows a "UI library could not be
 loaded" notice until the kit is vendored.)
