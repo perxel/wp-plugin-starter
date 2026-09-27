@@ -50,7 +50,7 @@ uninstall.php               Deletes the option (and any custom tables) on delete
 includes/*.php              One PSR-4-ish class per concern, namespace Perxel_Example\
 includes/views/*.php        Dumb admin templates, fed vars by the screen classes
 assets/css, assets/js       Admin-only CSS/JS (plugin-specific; layout comes from the kit)
-vendor/perxel-ui/           Shared admin-UI kit - vendored, see below
+vendor/perxel-ui/           Shared admin-UI kit - vendored only if there is an admin screen, see below
 languages/                  .pot template
 readme.txt                  WordPress.org listing (keep in sync with README.md + version)
 README.md                   Public-facing GitHub page only (see "Documentation rules")
@@ -163,6 +163,30 @@ We host the kit's component showcase as a hidden maintainer-only screen
 (`PERXEL_UI_SHOWCASE_HOSTED` + `Admin::can_see_showcase()`), so its own Tools
 page is suppressed.
 
+The starter does not commit the kit itself: a generated plugin vendors it as a
+setup step (README step 4), and only when it has an admin screen.
+
+### Plugins without an admin screen
+
+The kit is optional. A plugin with no settings/admin screen (shortcode-,
+editor- or front-end-only) does not vendor it, which keeps the zip and the
+WordPress.org review smaller. In that case:
+
+- Delete the UI-kit block in the main file (the `PERXEL_UI_SHOWCASE_HOSTED`
+  define and the `loader.php` require / `Perxel_UI_Loader::register()` call).
+- Delete `includes/Admin.php`, `includes/Settings.php`, `includes/views/`,
+  `assets/css/admin.css`, `assets/js/settings.js` and their wiring in
+  `Plugin` (`boot()` and the `activate()` defaults); make `uninstall.php` a
+  no-op if nothing is stored.
+- Keep `bin/update-ui.sh` (`bin/*.sh` stay byte-identical across plugins). The
+  `!/vendor/perxel-ui/` line in `.gitignore`, the showcase line in
+  `.distignore` and the kit prefixes in `phpcs.xml.dist` are harmless and can
+  stay.
+- In the plugin's own `CLAUDE.md`, drop this section and note "the kit is not
+  vendored - no admin screen needs it", so nobody assumes it was lost.
+
+If an admin screen is added later, run `bin/update-ui.sh` then.
+
 ## Before committing
 
 ```bash
@@ -255,8 +279,9 @@ truth (SSOT) for everything that is *not* plugin-specific:
 | House layout and conventions | `includes/`, `CLAUDE.md` |
 
 The admin UI kit is the one exception: its source is
-[`perxel/wp-plugin-ui`](https://github.com/perxel/wp-plugin-ui); plugins vendor it
-with `bin/update-ui.sh`.
+[`perxel/wp-plugin-ui`](https://github.com/perxel/wp-plugin-ui); plugins with an
+admin screen vendor it with `bin/update-ui.sh` (others skip it - see "Plugins
+without an admin screen").
 
 Rules:
 

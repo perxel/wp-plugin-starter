@@ -64,7 +64,11 @@ Screenshots, and the External services section (delete it if the plugin calls
 nothing third-party) - and replace this README with the plugin's own (public-facing only - see
 `CLAUDE.md` -> "Documentation rules").
 
-### 4. Vendor the UI kit
+### 4. Vendor the UI kit (only if the plugin has an admin screen)
+
+The kit is for admin screens. If the plugin has none (e.g. a shortcode- or
+editor-only plugin), skip this step and follow "Plugins without an admin
+screen" in `CLAUDE.md` instead.
 
 ```sh
 bin/update-ui.sh 0.23.0        # newest tag at github.com/perxel/wp-plugin-ui

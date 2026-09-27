@@ -3,7 +3,7 @@
  * Plugin Name:       Perxel Example
  * Plugin URI:        https://github.com/perxel/wp-example
  * Description:        A short description of what this plugin does.
- * Version:           0.0.2
+ * Version:           0.0.3
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Perxel
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PXEX_VERSION', '0.0.2' );
+define( 'PXEX_VERSION', '0.0.3' );
 define( 'PXEX_FILE', __FILE__ );
 define( 'PXEX_DIR', __DIR__ );
 define( 'PXEX_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
