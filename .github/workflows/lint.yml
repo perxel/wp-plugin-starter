@@ -10,7 +10,7 @@ jobs:
     name: PHP_CodeSniffer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -29,7 +29,7 @@ jobs:
     name: WordPress Plugin Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Check what actually ships, not the repo: the build strips vendor dev
       # tooling, composer.json, .github, etc. (see .distignore). Checking the
