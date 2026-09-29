@@ -33,6 +33,8 @@ Every placeholder is one of these six tokens. Replace them **case-sensitively**,
 | `PXEX` | Uppercase constant / hook prefix | `PXSH` |
 | `pxex` | Lowercase hook / option / CSS-class prefix | `pxsh` |
 
+**Pick the name first** - a third-party name (TinyMCE, WooCommerce...) may only appear at the end after `for` (`Perxel Accordion for TinyMCE`). See `CLAUDE.md` -> "Naming a plugin".
+
 One-liner (macOS `sed`; drop the `''` after `-i` on Linux) - edit the six
 replacement values first:
 

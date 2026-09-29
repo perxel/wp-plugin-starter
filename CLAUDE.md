@@ -204,6 +204,31 @@ There are no automated tests and no WP in the lint environment - `phpcs` and
 `php -l` verify syntax and style only. Behaviour must be smoke-tested on a real
 WordPress site.
 
+## Naming a plugin
+
+Decide the name **before** scaffolding: the slug becomes the folder, main file,
+text domain, namespace (`Ucfirst_Snake`), zip and repo, so renaming later touches
+everything. Rules from the .org review team (perxel-tinymce-accordion, 2026-09-29):
+
+- Pattern: `Perxel <Distinct Thing> for <Third-party>` - our brand first, the
+  third-party trademark/project name last, only after `for` / `with`. Never first
+  (`TinyMCE Accordion`), never mid-name (`Perxel TinyMCE Accordion`), never blended
+  (`TinyPress`). The slug follows the same order (`perxel-accordion-for-tinymce`).
+- "Perxel" is our own mark and the distinguishing term; the reviewer AI still
+  lists it as a "potential trademark" - say in the reply that we own it.
+- Adding a generic word (Simple, Easy, Advanced, Pro) does not make a name
+  distinctive; the brand prefix does. Search the plugin directory + web for the
+  name and its parts before submitting.
+- The same rule covers `Plugin URI`, repo name, contributor display name and any
+  logo or wordmark in the icon/banner - no third-party logos, and never imply
+  endorsement.
+- If a third-party name appears, add a one-line non-affiliation notice to
+  `readme.txt` and `README.md` ("X is a trademark of Y. This plugin is independent
+  and not affiliated with or endorsed by Y.").
+- A rename is a new slug reservation: reply to the review email asking for it,
+  upload a new zip at the "Add your plugin" page, keep the reply short and do not
+  list the changes.
+
 ## WordPress.org / Plugin Check compliance
 
 Rules that are not obvious and cost real time when re-derived per plugin:
@@ -212,6 +237,7 @@ Rules that are not obvious and cost real time when re-derived per plugin:
 |---|---|
 | Namespace root = slug in `Ucfirst_Snake` (`Perxel_Example`) | `PrefixAllGlobals` accepts it as the prefix; a `Vendor\Package` namespace is flagged (`NonPrefixedNamespaceFound`) and Plugin Check ignores the `phpcs.xml.dist` prefix list |
 | Custom-table names via `%i`, never string-concatenated | `WordPress.DB.PreparedSQL.NotPrepared` is **error-level** and blocks .org (see "Custom tables") |
+| Name/slug = `<Our brand> <what it does>`; a third-party name (TinyMCE, WooCommerce, ACF, Elementor...) only at the END after `for` (`Perxel Accordion for TinyMCE`, slug `perxel-accordion-for-tinymce`) - see "Naming a plugin" | perxel-tinymce-accordion review 2026-09-29: "TinyMCE" mid-name with no `for` implies official affiliation |
 | No `load_plugin_textdomain()` | .org auto-loads translations (slug == text domain); calling it on `plugins_loaded` is "too early" on WP 6.7+ |
 | Prefix any variable you **assign** in a view (`$pxex_url`); vars passed in via `extract()` are fine | `NonPrefixedVariableFound` fires on template-scope assignments |
 | No `phpcs:disable WordPress.Security.*` anywhere in `includes/` or the main file, and no `EscapeOutput` suppression at all: escape late via `Admin::kit()` (`wp_kses` + `Perxel_UI::allowed_html()`) or `wp_kses()` with a narrow allowlist | Reviewers flag file-wide security disables (perxel-image-optimizer, perxel-ai-translate 2026-09-22) and per-line "escaped earlier" echoes (perxel-ai-translate 2026-09-23); `bin/check-suppressions.sh` enforces both |
